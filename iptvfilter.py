@@ -11,12 +11,13 @@ import re
 #This class will handles any incoming request
 class IPTVFilter():
 
-    def __init__(self, url, blacklist_groups):
+    def __init__(self, url, blacklist_groups, separator):
         self.IPTV_M3U_URL = url
         self.blacklist_groups = blacklist_groups
+        self.separator = separator
 
     def generate_list(self):
-        self.blacklist_groups = self.blacklist_groups.replace(';', '|')
+        self.blacklist_groups = self.blacklist_groups.replace(self.separator, '|')
 
         r = requests.get(self.IPTV_M3U_URL)
 
