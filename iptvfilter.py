@@ -16,7 +16,7 @@ class IPTVFilter():
         self.blacklist_groups = blacklist_groups
 
     def generate_list(self):
-        self.blacklist_groups.replace(';', '\n')
+        self.blacklist_groups = self.blacklist_groups.replace(';', '|')
 
         r = requests.get(self.IPTV_M3U_URL)
 
