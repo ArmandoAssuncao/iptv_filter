@@ -17,6 +17,7 @@ pip3 install requests
 Set the envs:
 ```
 IPTV_M3U_URL="https://iptvsite.example/list"
+SECRET_KEY="YOUR_SECRET_KEY"
 BLACKLIST_GROUPS="GROUP 1;GROUP2;GROUP 3"
 API_KEY="YOUR_API_KEY"
 ```
