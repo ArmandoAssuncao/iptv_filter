@@ -21,7 +21,7 @@ NAME_NEW_FILE = 'list.m3u'
 app = Flask(__name__)
 
 @app.route("/list")
-def send_file():
+def get_list():
     if API_KEY != request.args.get('api_key'):
         return Response('api_key unauthorized', status=403, mimetype='text/plain')
 
@@ -31,7 +31,7 @@ def send_file():
     file_binary = bytearray(iptv_list)
 
     response = app.make_response(file_binary)
-    response.headers.set('Content-type','audio/mpegurl')
+    response.headers.set('Content-type','plain/text')
     response.headers.set('Content-Disposition', 'attachment', filename=NAME_NEW_FILE)
 
     return response
