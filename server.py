@@ -20,7 +20,6 @@ SEPARATOR = ';'
 NAME_NEW_FILE = 'list.m3u'
 NAME_FILE_COMPLEMENT = 'list_complement.m3u'
 UPLOAD_LIST_COMPLEMENT_FOLDER = 'storage'
-ALLOWED_EXTENSIONS = set(['m3u', 'm3u8'])
 
 ## Flask
 
@@ -28,9 +27,6 @@ app = Flask(__name__)
 app.secret_key = SECRET_KEY
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
 app.config['UPLOAD_FOLDER'] = UPLOAD_LIST_COMPLEMENT_FOLDER
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route("/list", methods = ["GET"])
 def get_list():
@@ -53,20 +49,18 @@ def upload_complement_list():
     if API_KEY != request.args.get('api_key'):
         return Response('api_key unauthorized', status=403, mimetype='text/plain')
 
-    if 'file' not in request.files:
-        return Response('param "file" invalid', status=400, mimetype='text/plain')
+    if 'content_m3u' not in request.form:
+        return Response('param "content_m3u" invalid', status=400, mimetype='text/plain')
 
-    file = request.files['file']
-    if file.filename == '':
-        return Response('param "file" invalid', status=400, mimetype='text/plain')
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.makedirs(app.config['UPLOAD_FOLDER'])
 
-    if file and allowed_file(file.filename):
-        if not os.path.exists(app.config['UPLOAD_FOLDER']):
-            os.makedirs(app.config['UPLOAD_FOLDER'])
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], NAME_FILE_COMPLEMENT))
-        return Response(status=201)
+    content_m3u = request.form['content_m3u']
+    list_file = open(os.path.join(app.config['UPLOAD_FOLDER'], NAME_FILE_COMPLEMENT), 'w')
+    list_file.write(content_m3u)
+    list_file.close()
 
-    return Response('param "file" invalid', status=400, mimetype='text/plain')
+    return Response(status=201)
 
 if __name__ == "__main__":
     app.run()
